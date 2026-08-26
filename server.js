@@ -7,13 +7,13 @@ const PORT = process.env.PORT || 3000;
 
 // ---- Edit here ----------------------------------------------------------
 // One Meta Pixel ID for the whole site. Get this from Meta Events Manager.
-const META_PIXEL_ID = 'REPLACE_WITH_YOUR_PIXEL_ID';
+const META_PIXEL_ID = '1850705885913736';
 
 // Each key becomes a route: /Comm1, /Comm2, ...
 // Add more communities by adding more entries here — no other code changes needed.
 const COMMUNITIES = {
   Comm1: 'https://chat.whatsapp.com/By6BErqhio69mmrPuVWtTJ',
-  Comm2: 'https://chat.whatsapp.com/REPLACE_WITH_COMM2_GROUP_LINK',
+  Comm2: 'https://chat.whatsapp.com/JEAu6hZbDuj6P2pvOU9tgq',
 };
 // --------------------------------------------------------------------------
 
