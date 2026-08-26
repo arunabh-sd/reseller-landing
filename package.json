@@ -1,0 +1,15 @@
+{
+  "name": "qrate-landing",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Qrate by ShopDeck — reseller community landing page",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}
