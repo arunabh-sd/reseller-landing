@@ -16,6 +16,30 @@ const COMMUNITIES = {
   Comm1: 'https://chat.whatsapp.com/By6BErqhio69mmrPuVWtTJ',
   Comm2: 'https://chat.whatsapp.com/JEAu6hZbDuj6P2pvOU9tgq',
 };
+
+// Each key becomes a route too: /Explore1, /Explore2, ... These pages show
+// the lead form, then a "quick education" section, then an "Explore <category>
+// Products" button that goes straight to that category's page on your site.
+// Add more variants (e.g. for different ad campaigns) by adding more keys —
+// they all share the same CATEGORY_LINKS below.
+const EXPLORE_PAGES = {
+  Explore1: {},
+  Explore2: {},
+};
+
+// Where the "Explore <category> Products" button should send people, per
+// category. Replace the remaining REPLACE_WITH_... ones with your real
+// category page URLs.
+const CATEGORY_LINKS = {
+  'Kurtis/Ethnic Wear': 'https://tinyurl.com/Qrate-Kurtis',
+  Sarees: 'https://tinyurl.com/Qrate-Sarees',
+  Jewellery: 'https://tinyurl.com/Qrate-Jewellery',
+  "Women's Bags/Accessories": 'https://tinyurl.com/Qrate-Bags',
+  'Home & Kitchen': 'https://REPLACE_WITH_YOUR_SITE/category/home-kitchen',
+  "Men's Fashion": 'https://REPLACE_WITH_YOUR_SITE/category/mens-fashion',
+  "Kid's Fashion": 'https://REPLACE_WITH_YOUR_SITE/category/kids-fashion',
+  Other: 'https://REPLACE_WITH_YOUR_SITE/category/all-products',
+};
 // --------------------------------------------------------------------------
 
 // Where leads are stored. Defaults to a folder inside the project so
@@ -51,9 +75,33 @@ function toCsvRow(fields) {
 const templatePath = path.join(__dirname, 'public', 'index.html');
 const template = fs.readFileSync(templatePath, 'utf8');
 
+const exploreTemplatePath = path.join(__dirname, 'public', 'explore.html');
+const exploreTemplate = fs.readFileSync(exploreTemplatePath, 'utf8');
+
 function renderPage(waLink, slug) {
   return template
     .split('__WA_LINK__').join(waLink)
+    .split('__COMMUNITY_SLUG__').join(slug)
+    .split('__PIXEL_ID__').join(META_PIXEL_ID);
+}
+
+// Appends ?utm_source=LP (or &utm_source=LP if the URL already has a query
+// string) so traffic landing on qrate.shopdeck.com from these buttons is
+// attributable back to the landing page. Applied at render time so it's
+// never forgotten when CATEGORY_LINKS is edited later.
+function withUtmSource(url) {
+  return url + (url.indexOf('?') === -1 ? '?' : '&') + 'utm_source=LP';
+}
+
+function renderExplorePage(slug) {
+  var linksWithUtm = {};
+  Object.keys(CATEGORY_LINKS).forEach((cat) => {
+    linksWithUtm[cat] = withUtmSource(CATEGORY_LINKS[cat]);
+  });
+  // Escape "<" so the JSON blob can't break out of its <script> tag.
+  var linksJson = JSON.stringify(linksWithUtm).replace(/</g, '\\u003c');
+  return exploreTemplate
+    .split('__CATEGORY_LINKS_JSON__').join(linksJson)
     .split('__COMMUNITY_SLUG__').join(slug)
     .split('__PIXEL_ID__').join(META_PIXEL_ID);
 }
@@ -65,6 +113,12 @@ app.use('/assets', express.static(path.join(__dirname, 'public', 'assets')));
 Object.keys(COMMUNITIES).forEach((slug) => {
   app.get(`/${slug}`, (req, res) => {
     res.send(renderPage(COMMUNITIES[slug], slug));
+  });
+});
+
+Object.keys(EXPLORE_PAGES).forEach((slug) => {
+  app.get(`/${slug}`, (req, res) => {
+    res.send(renderExplorePage(slug));
   });
 });
 
@@ -127,6 +181,7 @@ app.get('/leads', (req, res) => {
 
 app.listen(PORT, () => {
   console.log(`QRate landing running on port ${PORT}`);
-  console.log('Routes:', Object.keys(COMMUNITIES).map((s) => `/${s}`).join(', '));
+  console.log('Community routes:', Object.keys(COMMUNITIES).map((s) => `/${s}`).join(', '));
+  console.log('Explore routes:', Object.keys(EXPLORE_PAGES).map((s) => `/${s}`).join(', '));
   console.log('Leads file:', LEADS_FILE);
 });
