@@ -787,7 +787,27 @@
 
 <script>
 (function () {
-  var CATEGORY_LINKS = __CATEGORY_LINKS_JSON__;
+  var CATEGORY_SUBCATEGORIES = __CATEGORY_SUBCATEGORIES_JSON__;
+  var QRATE_BASE_URL = '__QRATE_BASE_URL__';
+
+  // Merges the sub_category filters of every selected category that has
+  // one into a single destination URL. Categories with no filter (null)
+  // contribute nothing but don't block the others. If NONE of the
+  // selected categories have a filter, falls back to the plain browse
+  // page (still with utm_source=LP).
+  function buildDestinationUrl(selectedCategories) {
+    var subcats = [];
+    selectedCategories.forEach(function (cat) {
+      var list = CATEGORY_SUBCATEGORIES[cat];
+      if (list) {
+        list.forEach(function (s) { if (subcats.indexOf(s) === -1) subcats.push(s); });
+      }
+    });
+    if (subcats.length > 0) {
+      return QRATE_BASE_URL + '?sub_category=' + encodeURIComponent(subcats.join(',')) + '&utm_source=LP';
+    }
+    return QRATE_BASE_URL + '?utm_source=LP';
+  }
   var QUALIFYING_CATEGORIES = ['Kurtis/Ethnic Wear', 'Sarees', 'Jewellery', "Women's Bags/Accessories"];
 
   var form = document.getElementById('lead-form');
@@ -824,8 +844,7 @@
                     orders !== 'New to reselling' &&
                     categories.some(function (c) { return QUALIFYING_CATEGORIES.indexOf(c) !== -1; });
     var leadCategories = categories.join(', ');
-    var primaryCategory = categories[0] || 'Other';
-    var destination = CATEGORY_LINKS[primaryCategory] || CATEGORY_LINKS['Other'];
+    var destination = buildDestinationUrl(categories);
 
     var payload = {
       community: '__COMMUNITY_SLUG__',
@@ -856,10 +875,14 @@
       // Uniquely-named custom event, just for this flow, so you can build a
       // custom conversion / audience off it without it blending into every
       // other Lead event across your ad account (including the Comm pages).
-      fbq('trackCustom', 'QRate Explore Submit', { content_category: '__COMMUNITY_SLUG__', categories: leadCategories, category_clicked: primaryCategory });
+      fbq('trackCustom', 'QRate Explore Submit', { content_category: '__COMMUNITY_SLUG__', categories: leadCategories });
 
       if (qualifies) {
-        fbq('trackCustom', 'QRate Explore Good Reseller', { content_category: '__COMMUNITY_SLUG__', categories: leadCategories, category_clicked: primaryCategory });
+        // Same event name AND same parameter shape as the Comm pages'
+        // Good Reseller, on purpose — so Meta treats every qualifying
+        // submit (Comm join or Explore) as one shared conversion history
+        // for optimisation, rather than splitting it into two signals.
+        fbq('trackCustom', 'Good Reseller', { content_category: '__COMMUNITY_SLUG__', categories: leadCategories });
       }
     }
 
