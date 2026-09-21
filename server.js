@@ -18,27 +18,49 @@ const COMMUNITIES = {
 };
 
 // Each key becomes a route too: /Explore1, /Explore2, ... These pages show
-// the lead form, then a "quick education" section, then an "Explore <category>
-// Products" button that goes straight to that category's page on your site.
-// Add more variants (e.g. for different ad campaigns) by adding more keys —
-// they all share the same CATEGORY_LINKS below.
+// the lead form, then a "Submit & Explore" button that sends people straight
+// to their category (or categories) on qrate.shopdeck.com. Add more variants
+// (e.g. for different ad campaigns) by adding more keys — they all share the
+// same QRATE_BASE_URL / CATEGORY_SUBCATEGORIES below.
 const EXPLORE_PAGES = {
   Explore1: {},
   Explore2: {},
 };
  
-// Where the "Explore <category> Products" button should send people, per
-// category. Replace the remaining REPLACE_WITH_... ones with your real
-// category page URLs.
-const CATEGORY_LINKS = {
-  'Kurtis/Ethnic Wear': 'https://tinyurl.com/Qrate-Kurtis',
-  Sarees: 'https://tinyurl.com/Qrate-Sarees',
-  Jewellery: 'https://tinyurl.com/Qrate-Jewellery',
-  "Women's Bags/Accessories": 'https://tinyurl.com/Qrate-Bags',
-  'Home & Kitchen': 'https://REPLACE_WITH_YOUR_SITE/category/home-kitchen',
-  "Men's Fashion": 'https://REPLACE_WITH_YOUR_SITE/category/mens-fashion',
-  "Kid's Fashion": 'https://REPLACE_WITH_YOUR_SITE/category/kids-fashion',
-  Other: 'https://REPLACE_WITH_YOUR_SITE/category/all-products',
+// The site the "Submit & Explore" button sends people to.
+const QRATE_BASE_URL = 'https://qrate.shopdeck.com/';
+ 
+// Which sub_category filter(s) each pill maps to on qrate.shopdeck.com.
+// `null` means that pill has no specific filter — it just goes to the plain
+// browse page. When someone selects more than one category, the filters
+// from every category that HAS one are merged into a single sub_category
+// list (categories with `null` contribute nothing and are otherwise
+// ignored, per your instruction to open the specific category's link when
+// one selected category has a filter and another doesn't). If nothing
+// selected has a filter, the plain browse page is used.
+const CATEGORY_SUBCATEGORIES = {
+  'Kurtis/Ethnic Wear': [
+    'chikankari_kurta_sets', 'chikankari_kurtis', 'kurta_pant_and_dupatta_sets',
+    'kurta_sets_general', 'kurtis_general_other', 'unstitched_suit_fabric',
+    'printed_kurtis', 'womens_clothing__womens_ethnic_wear',
+  ],
+  Sarees: [
+    'banarasi_sarees', 'cotton_sarees', 'handloom_sarees', 'linen_sarees',
+    'printed_sarees', 'sarees_general_other', 'silk_sarees',
+  ],
+  Jewellery: [
+    'anklets', 'bangles_and_bracelets', 'chains', 'earrings', 'hair_accessories',
+    'jewellery_combo_sets', 'kamarbands', 'mangalsutra_sets', 'mangalsutras',
+    'necklace_sets', 'necklaces', 'pendant_sets', 'other_jewellery_and_novelty',
+    'pendants', 'rakhis', 'rings',
+  ],
+  "Women's Bags/Accessories": [
+    'clutches', 'handbags', 'other_bags', 'potli_bags', 'sling_bags', 'tote_bags',
+  ],
+  'Home & Kitchen': null,
+  "Men's Fashion": null,
+  "Kid's Fashion": null,
+  Other: null,
 };
 // --------------------------------------------------------------------------
  
@@ -85,23 +107,12 @@ function renderPage(waLink, slug) {
     .split('__PIXEL_ID__').join(META_PIXEL_ID);
 }
  
-// Appends ?utm_source=LP (or &utm_source=LP if the URL already has a query
-// string) so traffic landing on qrate.shopdeck.com from these buttons is
-// attributable back to the landing page. Applied at render time so it's
-// never forgotten when CATEGORY_LINKS is edited later.
-function withUtmSource(url) {
-  return url + (url.indexOf('?') === -1 ? '?' : '&') + 'utm_source=LP';
-}
- 
 function renderExplorePage(slug) {
-  var linksWithUtm = {};
-  Object.keys(CATEGORY_LINKS).forEach((cat) => {
-    linksWithUtm[cat] = withUtmSource(CATEGORY_LINKS[cat]);
-  });
-  // Escape "<" so the JSON blob can't break out of its <script> tag.
-  var linksJson = JSON.stringify(linksWithUtm).replace(/</g, '\\u003c');
+  // Escape "<" so these JSON blobs can't break out of their <script> tag.
+  var subcatsJson = JSON.stringify(CATEGORY_SUBCATEGORIES).replace(/</g, '\\u003c');
   return exploreTemplate
-    .split('__CATEGORY_LINKS_JSON__').join(linksJson)
+    .split('__CATEGORY_SUBCATEGORIES_JSON__').join(subcatsJson)
+    .split('__QRATE_BASE_URL__').join(QRATE_BASE_URL)
     .split('__COMMUNITY_SLUG__').join(slug)
     .split('__PIXEL_ID__').join(META_PIXEL_ID);
 }
