@@ -608,6 +608,8 @@
   }
   @keyframes spin { to { transform: rotate(360deg); } }
   .done-text { font-size: 15px; font-weight: 700; color: var(--navy); }
+  .done-emoji { font-size: 42px; }
+  .done-scene .btn { margin-top: 4px; }
 
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; }
@@ -775,16 +777,22 @@
         <div class="form-error deva" id="form-error"></div>
 
         <div class="submit-wrap">
-          <button type="submit" class="btn btn-primary deva">Start Earning 🚀</button>
+          <button type="submit" class="btn btn-primary deva" id="form-submit-btn">Start Earning 🚀</button>
         </div>
       </form>
     </section>
 
-    <!-- Redirect / done -->
+    <!-- Redirect / done (qrate destination — auto-redirects) -->
     <section class="screen" id="screen-done">
-      <div class="done-scene">
+      <div class="done-scene" id="done-spinner">
         <div class="spinner"></div>
         <div class="done-text deva">Aapka QRate page taiyar ho raha hai…</div>
+      </div>
+      <!-- WhatsApp destination — a real tap CTA instead of an auto-redirect -->
+      <div class="done-scene" id="done-join" style="display: none;">
+        <div class="done-emoji">🎉</div>
+        <div class="done-text deva">Shukriya! Neeche community join karein</div>
+        <button class="btn btn-primary deva" id="join-wa-btn">Join WA Community 💬</button>
       </div>
     </section>
 
@@ -794,6 +802,8 @@
 <script>
 (function () {
   var FLOW_MODE = '__FLOW_MODE__';
+  var DEST_TYPE = '__DEST_TYPE__'; // 'qrate' (redirect to qrate.shopdeck.com) or 'whatsapp' (tap-to-join CTA)
+  var WA_LINK = '__WA_LINK__';
   var COMMUNITY_SLUG = '__COMMUNITY_SLUG__';
   var QRATE_BASE_URL = '__QRATE_BASE_URL__';
   var CATEGORY_SUBCATEGORIES = __CATEGORY_SUBCATEGORIES_JSON__;
@@ -835,6 +845,7 @@
     return QRATE_BASE_URL + '?utm_source=LP';
   }
 
+  // qrate.shopdeck.com destination (Explore1-4) — unchanged from before.
   function fireOnboardingPixel(qualifies, categories) {
     if (!window.fbq) return;
     // Lead + Good Reseller are both gated to qualifying resellers only.
@@ -844,11 +855,23 @@
       if (categories) grParams.categories = categories;
       fbq('trackCustom', 'Good Reseller', grParams);
     }
-    // Start Earning Clicked fires for every submit/click here — no qualifying filter,
-    // so it captures every lead. (Form mode: fires at form submit, i.e. the form's own
-    // "Start Earning" button. Direct mode: fires right on the Screen 5 "Start Earning"
-    // click, since there's no form after it.)
+    // Fires for every submit/click here — no qualifying filter, so it captures
+    // every lead regardless of quality.
     fbq('trackCustom', 'Start Earning Clicked', { content_category: COMMUNITY_SLUG, flow_mode: FLOW_MODE });
+  }
+
+  // WhatsApp destination, Comm1 (form) — fires on the actual "Join WA
+  // Community" tap (not on form submit). Lead only fires together with
+  // Good Reseller, both gated to qualifying resellers only — same trigger,
+  // same condition.
+  function fireWaJoinPixel(qualifies, categories) {
+    if (!window.fbq) return;
+    if (qualifies) {
+      fbq('track', 'Lead', { content_name: 'QRate WA Community Join', content_category: COMMUNITY_SLUG, flow_mode: FLOW_MODE });
+      var grParams = { content_category: COMMUNITY_SLUG };
+      if (categories) grParams.categories = categories;
+      fbq('trackCustom', 'Good Reseller', grParams);
+    }
   }
 
   // Screen 1
@@ -861,10 +884,33 @@
   document.getElementById('next-3').addEventListener('click', function () { showScreen('screen-4'); });
   document.getElementById('next-4').addEventListener('click', function () { showScreen('screen-5'); });
 
-  // Screen 5 — Start Earning
+  // Screen 5 — direct/no-form + WhatsApp destination: the button itself IS
+  // the join CTA, so relabel it up front (form mode keeps "Start Earning"
+  // on screen 5, since the form still comes next either way — it's the
+  // form's own submit button, below, that gets relabeled for that case).
+  if (DEST_TYPE === 'whatsapp' && FLOW_MODE === 'direct') {
+    document.getElementById('btn-start').textContent = 'Join WA Community 💬';
+  }
+
+  // Form's own submit button — WhatsApp destination (Comm1): relabel up
+  // front so it reads "Join WhatsApp Community" instead of "Start Earning",
+  // since submitting here leads to the WA-join screen, not qrate.shopdeck.com.
+  if (DEST_TYPE === 'whatsapp') {
+    var formSubmitBtn = document.getElementById('form-submit-btn');
+    if (formSubmitBtn) formSubmitBtn.textContent = 'Join WhatsApp Community 💬';
+  }
+
+  // Screen 5 — Start Earning / Join WA Community
   document.getElementById('btn-start').addEventListener('click', function () {
     if (FLOW_MODE === 'form') {
       showScreen('screen-form');
+    } else if (DEST_TYPE === 'whatsapp') {
+      // Comm2: no form, so no qualifying data — fires Lead only, nothing else,
+      // for anyone who taps this.
+      if (window.fbq) {
+        fbq('track', 'Lead', { content_name: 'QRate WA Community Join', content_category: COMMUNITY_SLUG, flow_mode: FLOW_MODE });
+      }
+      window.open(WA_LINK, '_blank', 'noopener');
     } else {
       showScreen('screen-done');
       fireOnboardingPixel(true, '');
@@ -922,11 +968,29 @@
       } catch (leadErr) { /* ignore */ }
 
       showScreen('screen-done');
-      fireOnboardingPixel(qualifies, leadCategories);
 
-      setTimeout(function () {
-        window.location.href = destination;
-      }, 600);
+      if (DEST_TYPE === 'whatsapp') {
+        // Fires for every submit, no qualifying filter — a separate,
+        // unconditional record that the form was completed. Lead + Good
+        // Reseller are NOT fired here — they fire on the actual "Join WA
+        // Community" tap below, same as the original /Comm* pages.
+        if (window.fbq) {
+          fbq('trackCustom', 'WA Form Submitted', { content_category: COMMUNITY_SLUG, flow_mode: FLOW_MODE });
+        }
+
+        // Real tap CTA instead of an auto-redirect — no timer.
+        document.getElementById('done-spinner').style.display = 'none';
+        document.getElementById('done-join').style.display = 'flex';
+        document.getElementById('join-wa-btn').addEventListener('click', function () {
+          fireWaJoinPixel(qualifies, leadCategories);
+          window.open(WA_LINK, '_blank', 'noopener');
+        });
+      } else {
+        fireOnboardingPixel(qualifies, leadCategories);
+        setTimeout(function () {
+          window.location.href = destination;
+        }, 600);
+      }
     });
   }
 })();
