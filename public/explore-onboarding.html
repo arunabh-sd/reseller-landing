@@ -788,10 +788,13 @@
         <div class="spinner"></div>
         <div class="done-text deva">Aapka QRate page taiyar ho raha hai…</div>
       </div>
-      <!-- WhatsApp destination — a real tap CTA instead of an auto-redirect -->
+      <!-- WhatsApp destination — WhatsApp opens immediately on submit; this
+           screen is the confirmation, and its button is a fallback in case
+           the popup got blocked, not the primary way to join. -->
       <div class="done-scene" id="done-join" style="display: none;">
         <div class="done-emoji">🎉</div>
-        <div class="done-text deva">Shukriya! Neeche community join karein</div>
+        <div class="done-text deva">Shukriya! WhatsApp khul raha hai…</div>
+        <div class="subline deva" style="margin: -10px 0 0;">Nahi khula? Neeche tap karein</div>
         <button class="btn btn-primary deva" id="join-wa-btn">Join WA Community 💬</button>
       </div>
     </section>
@@ -860,10 +863,10 @@
     fbq('trackCustom', 'Start Earning Clicked', { content_category: COMMUNITY_SLUG, flow_mode: FLOW_MODE });
   }
 
-  // WhatsApp destination, Comm1 (form) — fires on the actual "Join WA
-  // Community" tap (not on form submit). Lead only fires together with
-  // Good Reseller, both gated to qualifying resellers only — same trigger,
-  // same condition.
+  // WhatsApp destination, Comm1 (form) — fires at form submit, right
+  // before WhatsApp opens. Lead only fires together with Good Reseller,
+  // both gated to qualifying resellers only — same trigger, same
+  // condition.
   function fireWaJoinPixel(qualifies, categories) {
     if (!window.fbq) return;
     if (qualifies) {
@@ -971,18 +974,28 @@
 
       if (DEST_TYPE === 'whatsapp') {
         // Fires for every submit, no qualifying filter — a separate,
-        // unconditional record that the form was completed. Lead + Good
-        // Reseller are NOT fired here — they fire on the actual "Join WA
-        // Community" tap below, same as the original /Comm* pages.
+        // unconditional record that the form was completed.
         if (window.fbq) {
           fbq('trackCustom', 'WA Form Submitted', { content_category: COMMUNITY_SLUG, flow_mode: FLOW_MODE });
         }
 
-        // Real tap CTA instead of an auto-redirect — no timer.
+        // Lead + Good Reseller fire together here, gated to qualifying only
+        // — same condition as before, just fired immediately on submit
+        // instead of waiting for a second tap on a join button.
+        fireWaJoinPixel(qualifies, leadCategories);
+
+        // Open WhatsApp straight away. This is still a direct, synchronous
+        // continuation of the submit-button tap that triggered this handler
+        // (nothing awaited before it), so it counts as part of that user
+        // gesture and browsers won't block the popup.
+        window.open(WA_LINK, '_blank', 'noopener');
+
+        // This screen is just the confirmation now — its button is a
+        // fallback (re-opens the same link, no pixel re-fire) in case a
+        // browser blocked the popup above.
         document.getElementById('done-spinner').style.display = 'none';
         document.getElementById('done-join').style.display = 'flex';
         document.getElementById('join-wa-btn').addEventListener('click', function () {
-          fireWaJoinPixel(qualifies, leadCategories);
           window.open(WA_LINK, '_blank', 'noopener');
         });
       } else {
