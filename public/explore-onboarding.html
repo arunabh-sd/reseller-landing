@@ -71,12 +71,18 @@
   button { font-family: inherit; }
 
   /* ---------- App shell ---------- */
+  /* Fixed (not min-) height, pinned to the real visible viewport (dvh
+     accounts for mobile browser chrome), so every screen's content is
+     sized to fit without the person needing to scroll to reach the
+     CTA. overflow-y:auto is only a safety net for edge cases. */
   .app {
     max-width: 480px;
     margin: 0 auto;
-    min-height: 100vh;
+    height: 100vh;
+    height: 100dvh;
     display: flex;
     flex-direction: column;
+    overflow-y: auto;
     background: var(--bg);
   }
 
@@ -85,6 +91,7 @@
     align-items: center;
     justify-content: center;
     padding: 16px 20px 8px;
+    flex-shrink: 0;
   }
   .brand-bar img { height: 28px; width: auto; display: block; }
 
@@ -93,6 +100,7 @@
     gap: 8px;
     justify-content: center;
     padding: 4px 20px 14px;
+    flex-shrink: 0;
   }
   .progress-dots .dot {
     width: 8px;
@@ -110,16 +118,22 @@
   /* ---------- Screens ---------- */
   .stage {
     flex: 1;
+    min-height: 0;
     position: relative;
     display: flex;
     flex-direction: column;
   }
 
+  /* min-height:0 lets this column shrink below its content's natural
+     size instead of forcing the page to grow taller than the viewport
+     (the default flex min-height is "auto", which otherwise blocks
+     shrinking and is what was pushing the CTAs below the fold). */
   .screen {
     display: none;
     flex-direction: column;
     flex: 1;
-    padding: 8px 22px 32px;
+    min-height: 0;
+    padding: 8px 22px 18px;
     animation: screenIn 0.4s ease;
   }
   .screen.active { display: flex; }
@@ -141,6 +155,7 @@
     padding: 6px 14px;
     border-radius: 999px;
     margin-bottom: 14px;
+    flex-shrink: 0;
   }
 
   .headline {
@@ -151,6 +166,7 @@
     font-weight: 700;
     color: var(--navy);
     margin-bottom: 14px;
+    flex-shrink: 0;
   }
   .headline .hl { color: var(--purple); }
 
@@ -160,14 +176,25 @@
     font-size: 14px;
     line-height: 1.5;
     margin: -6px 0 14px;
+    flex-shrink: 0;
   }
 
   /* ---------- Phone mock / animated diagram frame ---------- */
   /* Sized to match the real screen recordings' native aspect ratio
      (~720:1474, roughly 0.49) so autoplay content is never cropped. */
+  /* Flexible, not fixed: this is the one element that grows or shrinks
+     to fit whatever room is left after the headline/copy/buttons take
+     their natural size, so the CTA is always fully on-screen. The
+     aspect-ratio keeps the true 240:490 (~0.49) proportions from the
+     real screen recordings locked in at any size — it only ever gets
+     smaller, never cropped or stretched. */
   .phone-mock {
-    width: 240px;
-    height: 490px;
+    flex: 1 1 auto;
+    min-height: 0;
+    width: 100%;
+    max-width: 240px;
+    max-height: 490px;
+    aspect-ratio: 240 / 490;
     margin: 4px auto 22px;
     border-radius: 30px;
     background: var(--surface);
@@ -175,7 +202,6 @@
     box-shadow: var(--shadow);
     position: relative;
     overflow: hidden;
-    flex-shrink: 0;
   }
   .phone-mock .fill {
     position: absolute;
@@ -435,7 +461,7 @@
   }
 
   /* ---------- Buttons ---------- */
-  .btn-stack { margin-top: auto; display: flex; flex-direction: column; gap: 12px; padding-top: 10px; }
+  .btn-stack { margin-top: auto; flex-shrink: 0; display: flex; flex-direction: column; gap: 12px; padding-top: 10px; }
 
   .btn {
     display: flex;
