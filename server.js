@@ -17,31 +17,50 @@ const COMMUNITIES = {
   Comm2: 'https://chat.whatsapp.com/JEAu6hZbDuj6P2pvOU9tgq',
 };
 
-// The old lead-form-first page (explore.html). /Explore1 and /Explore2 used
-// to serve this, but both now point at the newer 5-screen onboarding flow
-// below (EXPLORE_ONBOARDING_PAGES) instead. Left empty — and the template/
-// render function further down left in place — in case a future variant
-// wants this style of page again; nothing routes here right now.
+// The old lead-form-first page (explore.html) and the old single-screen
+// WhatsApp-unlock page (index.html). /Explore1/Explore2 and /Comm1/Comm2
+// used to serve these, but all four now point at the 5-screen onboarding
+// flow below instead. Left empty — and the templates/render functions
+// further down left in place — in case a future variant wants either style
+// of page again; nothing routes here right now.
 const EXPLORE_PAGES = {
 };
  
-// Each key becomes a route: /Explore1, /Explore2, ... These are the 5-screen,
-// one-at-a-time onboarding pages (qualifying question → 3 explainer screens →
-// "Start Earning"). `mode` controls what "Start Earning" does:
-//   'direct' — no form at all, taps straight through to qrate.shopdeck.com
+// Each key becomes a route: /Explore1, /Explore2, /Explore3, /Explore4,
+// /Comm1, /Comm2. All six render the exact same 5-screen onboarding
+// template (qualifying question → 3 explainer screens → a final screen
+// that completes the flow). `mode` controls how that final screen behaves:
+//   'direct' — no form at all, one tap completes it
 //   'form'   — reveals a one-page form (name, phone, orders, categories)
-//              first, then redirects to that category's filtered page
-// Both share the same QRATE_BASE_URL / CATEGORY_SUBCATEGORIES below.
+//              first, then completes on submit
+// `waLink` controls WHERE completing the flow sends people:
+//   omitted    — redirects to qrate.shopdeck.com (filtered to the category
+//                selected in form mode; the plain browse page in direct mode)
+//   a WA link  — shows a real "Join WA Community" button to tap instead of
+//                an auto-redirect (no category filtering, since the
+//                destination isn't qrate.shopdeck.com)
 //
-// Explore1 and Explore2 are the two live/primary links. Explore3 and Explore4
-// are kept as aliases pointing at the exact same content (not redirects —
-// served directly, so no extra hop or duplicate PageView) purely so any
-// links already shared or running in ads under those old names keep working.
+// Explore1/Explore2 and Comm1/Comm2 are the four live/primary links.
+// Explore3 and Explore4 are kept as aliases of Explore2/Explore1 (not
+// redirects — served directly, so no extra hop or duplicate PageView)
+// purely so any links already shared or running in ads under those older
+// names keep working.
 const EXPLORE_ONBOARDING_PAGES = {
   Explore1: { mode: 'form' },
   Explore2: { mode: 'direct' },
   Explore3: { mode: 'direct' }, // alias of Explore2
   Explore4: { mode: 'form' },   // alias of Explore1
+  Comm1: { mode: 'form', waLink: COMMUNITIES.Comm1 },
+  Comm2: { mode: 'direct', waLink: COMMUNITIES.Comm1 }, // Comm2 group paused -> also Comm1's group for now
+};
+ 
+// Each key becomes a route: /Join1, ... A minimal page (no onboarding
+// screens, no form) that shows briefly then auto-redirects to a WhatsApp
+// group after ~2 seconds. For sharing through channels — like a Gupshup HSM
+// template — that won't let you send a chat.whatsapp.com link directly.
+const WA_REDIRECT_PAGES = {
+  Join1: { waLink: COMMUNITIES.Comm1 },
+  Join2: { waLink: COMMUNITIES.Comm1 }, // Comm2 group paused -> also Comm1's group for now (see COMMUNITIES above); flip to COMMUNITIES.Comm2 once that group is running again
 };
  
 // The site the "Submit & Explore" button sends people to.
@@ -120,6 +139,9 @@ const exploreTemplate = fs.readFileSync(exploreTemplatePath, 'utf8');
 const onboardingTemplatePath = path.join(__dirname, 'public', 'explore-onboarding.html');
 const onboardingTemplate = fs.readFileSync(onboardingTemplatePath, 'utf8');
  
+const waRedirectTemplatePath = path.join(__dirname, 'public', 'wa-redirect.html');
+const waRedirectTemplate = fs.readFileSync(waRedirectTemplatePath, 'utf8');
+ 
 function renderPage(waLink, slug) {
   return template
     .split('__WA_LINK__').join(waLink)
@@ -137,12 +159,21 @@ function renderExplorePage(slug) {
     .split('__PIXEL_ID__').join(META_PIXEL_ID);
 }
  
-function renderOnboardingPage(slug, mode) {
+function renderOnboardingPage(slug, mode, waLink) {
   var subcatsJson = JSON.stringify(CATEGORY_SUBCATEGORIES).replace(/</g, '\\u003c');
   return onboardingTemplate
     .split('__CATEGORY_SUBCATEGORIES_JSON__').join(subcatsJson)
     .split('__QRATE_BASE_URL__').join(QRATE_BASE_URL)
     .split('__FLOW_MODE__').join(mode)
+    .split('__DEST_TYPE__').join(waLink ? 'whatsapp' : 'qrate')
+    .split('__WA_LINK__').join(waLink || '')
+    .split('__COMMUNITY_SLUG__').join(slug)
+    .split('__PIXEL_ID__').join(META_PIXEL_ID);
+}
+ 
+function renderWaRedirectPage(slug, waLink) {
+  return waRedirectTemplate
+    .split('__WA_LINK__').join(waLink)
     .split('__COMMUNITY_SLUG__').join(slug)
     .split('__PIXEL_ID__').join(META_PIXEL_ID);
 }
@@ -150,12 +181,6 @@ function renderOnboardingPage(slug, mode) {
 // Serve logo/image assets (the page itself embeds its logo inline, but
 // these stay here as editable source files for future use).
 app.use('/assets', express.static(path.join(__dirname, 'public', 'assets')));
- 
-Object.keys(COMMUNITIES).forEach((slug) => {
-  app.get(`/${slug}`, (req, res) => {
-    res.send(renderPage(COMMUNITIES[slug], slug));
-  });
-});
  
 Object.keys(EXPLORE_PAGES).forEach((slug) => {
   app.get(`/${slug}`, (req, res) => {
@@ -165,13 +190,20 @@ Object.keys(EXPLORE_PAGES).forEach((slug) => {
  
 Object.keys(EXPLORE_ONBOARDING_PAGES).forEach((slug) => {
   app.get(`/${slug}`, (req, res) => {
-    res.send(renderOnboardingPage(slug, EXPLORE_ONBOARDING_PAGES[slug].mode));
+    var cfg = EXPLORE_ONBOARDING_PAGES[slug];
+    res.send(renderOnboardingPage(slug, cfg.mode, cfg.waLink));
+  });
+});
+ 
+Object.keys(WA_REDIRECT_PAGES).forEach((slug) => {
+  app.get(`/${slug}`, (req, res) => {
+    res.send(renderWaRedirectPage(slug, WA_REDIRECT_PAGES[slug].waLink));
   });
 });
  
 // Root redirects to the first community page.
 app.get('/', (req, res) => {
-  res.redirect(`/${Object.keys(COMMUNITIES)[0]}`);
+  res.redirect('/Comm1');
 });
  
 // Called by the form on every valid submission. Appends one row per lead.
@@ -228,8 +260,10 @@ app.get('/leads', (req, res) => {
  
 app.listen(PORT, () => {
   console.log(`QRate landing running on port ${PORT}`);
-  console.log('Community routes:', Object.keys(COMMUNITIES).map((s) => `/${s}`).join(', '));
-  console.log('Explore routes:', Object.keys(EXPLORE_PAGES).map((s) => `/${s}`).join(', '));
   console.log('Onboarding routes:', Object.keys(EXPLORE_ONBOARDING_PAGES).map((s) => `/${s}`).join(', '));
+  if (Object.keys(EXPLORE_PAGES).length) {
+    console.log('Legacy explore routes:', Object.keys(EXPLORE_PAGES).map((s) => `/${s}`).join(', '));
+  }
+  console.log('WA redirect routes:', Object.keys(WA_REDIRECT_PAGES).map((s) => `/${s}`).join(', '));
   console.log('Leads file:', LEADS_FILE);
 });
