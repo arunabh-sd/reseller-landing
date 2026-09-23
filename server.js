@@ -56,8 +56,8 @@ const EXPLORE_ONBOARDING_PAGES = {
  
 // Each key becomes a route: /Join1, ... A minimal page (no onboarding
 // screens, no form) that shows briefly then auto-redirects to a WhatsApp
-// group after ~2 seconds. For sharing through channels — like a Gupshup HSM
-// template — that won't let you send a chat.whatsapp.com link directly.
+// group almost immediately. For sharing through channels — like a Gupshup
+// HSM template — that won't let you send a chat.whatsapp.com link directly.
 const WA_REDIRECT_PAGES = {
   Join1: { waLink: COMMUNITIES.Comm1 },
   Join2: { waLink: COMMUNITIES.Comm1 }, // Comm2 group paused -> also Comm1's group for now (see COMMUNITIES above); flip to COMMUNITIES.Comm2 once that group is running again
