@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>QRate by ShopDeck — Joining WhatsApp Community</title>
+<meta name="robots" content="noindex">
+
+<!-- Belt-and-suspenders redirect #1: works even with JS disabled/blocked,
+     and even in restrictive in-app webviews that don't run JS reliably. -->
+<meta http-equiv="refresh" content="2; url=__WA_LINK__">
+
+<!-- Meta Pixel base code -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '__PIXEL_ID__');
+fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=__PIXEL_ID__&ev=PageView&noscript=1"
+/></noscript>
+
+<style>
+  :root {
+    --bg: #FAF6F0;
+    --surface: #FFFFFF;
+    --navy: #1C1730;
+    --sub: #6B6478;
+    --purple: #7530B0;
+    --purple-deep: #5A2389;
+    --purple-soft: #F1E6FB;
+    --shadow: 0 18px 40px rgba(28, 23, 48, 0.14);
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--navy);
+    font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap {
+    min-height: 100vh;
+    min-height: 100dvh;
+    max-width: 420px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 24px;
+    gap: 18px;
+  }
+  .logo { height: 30px; width: auto; margin-bottom: 6px; }
+  .spinner {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    border: 4px solid var(--purple-soft);
+    border-top-color: var(--purple);
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .msg { font-size: 16px; font-weight: 700; }
+  .sub { font-size: 13.5px; color: var(--sub); margin-top: -8px; }
+  .fallback {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 10px;
+    padding: 15px 26px;
+    border-radius: 14px;
+    background: var(--purple);
+    color: #fff;
+    font-weight: 700;
+    font-size: 14.5px;
+    text-decoration: none;
+    box-shadow: var(--shadow);
+  }
+  .fallback:active { background: var(--purple-deep); }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <img class="logo" src="/assets/qrate-logo.png" alt="QRate by ShopDeck">
+  <div class="spinner"></div>
+  <div class="msg">Aapko WhatsApp Community mein le jaya ja raha hai…</div>
+  <div class="sub">Automatically khulega — agar nahi khule to neeche tap karein</div>
+  <a class="fallback" id="join-now" href="__WA_LINK__">Abhi Join Karein 💬</a>
+</div>
+
+<script>
+(function () {
+  var WA_LINK = '__WA_LINK__';
+  var COMMUNITY_SLUG = '__COMMUNITY_SLUG__';
+
+  if (window.fbq) {
+    // Fires immediately for every single visit here — this page has no
+    // qualifying step at all (no reseller question, no form), so it's
+    // deliberately not named/treated as "Lead"; it's purely a reach/
+    // click-through count for the HSM campaign that links here.
+    fbq('trackCustom', 'WA HSM Redirect', { content_category: COMMUNITY_SLUG });
+  }
+
+  // Belt-and-suspenders redirect #2 (JS timer). replace(), not href=, so
+  // this bounce page doesn't sit in browser history behind the WA app.
+  setTimeout(function () {
+    window.location.replace(WA_LINK);
+  }, 2000);
+})();
+</script>
+
+</body>
+</html>
