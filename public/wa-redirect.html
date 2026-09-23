@@ -7,8 +7,10 @@
 <meta name="robots" content="noindex">
 
 <!-- Belt-and-suspenders redirect #1: works even with JS disabled/blocked,
-     and even in restrictive in-app webviews that don't run JS reliably. -->
-<meta http-equiv="refresh" content="2; url=__WA_LINK__">
+     and even in restrictive in-app webviews that don't run JS reliably.
+     content="0" = redirect as soon as the browser has parsed this tag,
+     i.e. essentially immediately. -->
+<meta http-equiv="refresh" content="0; url=__WA_LINK__">
 
 <!-- Meta Pixel base code -->
 <script>
@@ -117,9 +119,12 @@ src="https://www.facebook.com/tr?id=__PIXEL_ID__&ev=PageView&noscript=1"
 
   // Belt-and-suspenders redirect #2 (JS timer). replace(), not href=, so
   // this bounce page doesn't sit in browser history behind the WA app.
+  // A short delay (not 0) so the pixel call above actually gets a moment
+  // to go out on the network before the page navigates away — near-instant
+  // to the person, but not so instant it races the beacon.
   setTimeout(function () {
     window.location.replace(WA_LINK);
-  }, 2000);
+  }, 150);
 })();
 </script>
 
