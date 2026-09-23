@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>QRate by ShopDeck — Start Earning</title>
+<meta name="description" content="WhatsApp aur Instagram par resell karte ho? QRate se 1 Lakh+ products explore karein, apna price set karein, aur earning shuru karein.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=Inter:wght@400;500;600;700;800&family=Noto+Sans+Devanagari:wght@600;700&display=swap" rel="stylesheet">
+
+<!-- Meta Pixel Code -->
+<script>
+  var META_PIXEL_ID = '__PIXEL_ID__';
+  !function(f,b,e,v,n,t,s)
+  {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+  n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+  if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+  n.queue=[];t=b.createElement(e);t.async=!0;
+  t.src=v;s=b.getElementsByTagName(e)[0];
+  s.parentNode.insertBefore(t,s)}(window, document,'script',
+  'https://connect.facebook.net/en_US/fbevents.js');
+  fbq('init', META_PIXEL_ID);
+  fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none"
+  src="https://www.facebook.com/tr?id=__PIXEL_ID__&ev=PageView&noscript=1"
+/></noscript>
+<!-- End Meta Pixel Code -->
+
+<style>
+  :root {
+    --bg: #FDFBF6;
+    --surface: #FFFFFF;
+    --ink: #16172E;
+    --sub: #6E6E82;
+    --navy: #0E1B36;
+    --gold: #FFCB3D;
+    --gold-deep: #F0AE12;
+    --purple: #7530B0;
+    --purple-deep: #5A2389;
+    --purple-soft: #F1ECFB;
+    --green: #1F5B40;
+    --green-soft: #E4F7ED;
+    --red: #C23B3F;
+    --line: rgba(14, 27, 54, 0.1);
+    --shadow: 0 10px 28px rgba(14, 27, 54, 0.09);
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    overscroll-behavior-y: none;
+  }
+
+  .deva { font-family: 'Noto Sans Devanagari', 'Inter', sans-serif; }
+
+  h1, h2, .display {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    color: var(--navy);
+    margin: 0;
+  }
+
+  button { font-family: inherit; }
+
+  /* ---------- App shell ---------- */
+  .app {
+    max-width: 480px;
+    margin: 0 auto;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: var(--bg);
+  }
+
+  .brand-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px 20px 8px;
+  }
+  .brand-bar img { height: 28px; width: auto; display: block; }
+
+  .progress-dots {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    padding: 4px 20px 14px;
+  }
+  .progress-dots .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--line);
+    transition: background 0.25s ease, transform 0.25s ease;
+  }
+  .progress-dots .dot.active {
+    background: var(--purple);
+    transform: scale(1.35);
+  }
+  .progress-dots .dot.done { background: var(--purple-deep); }
+
+  /* ---------- Screens ---------- */
+  .stage {
+    flex: 1;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .screen {
+    display: none;
+    flex-direction: column;
+    flex: 1;
+    padding: 8px 22px 32px;
+    animation: screenIn 0.4s ease;
+  }
+  .screen.active { display: flex; }
+
+  @keyframes screenIn {
+    from { opacity: 0; transform: translateY(14px); }
+    to { opacity: 1; transform: none; }
+  }
+
+  .kicker {
+    display: inline-flex;
+    align-self: center;
+    align-items: center;
+    gap: 6px;
+    background: var(--purple-soft);
+    color: var(--purple);
+    font-weight: 700;
+    font-size: 12.5px;
+    padding: 6px 14px;
+    border-radius: 999px;
+    margin-bottom: 14px;
+  }
+
+  .headline {
+    text-align: center;
+    font-size: 19.5px;
+    line-height: 1.32;
+    letter-spacing: -0.1px;
+    font-weight: 700;
+    color: var(--navy);
+    margin-bottom: 14px;
+  }
+  .headline .hl { color: var(--purple); }
+
+  .subline {
+    text-align: center;
+    color: var(--sub);
+    font-size: 14px;
+    line-height: 1.5;
+    margin: -6px 0 14px;
+  }
+
+  /* ---------- Phone mock / animated diagram frame ---------- */
+  /* Sized to match the real screen recordings' native aspect ratio
+     (~720:1474, roughly 0.49) so autoplay content is never cropped. */
+  .phone-mock {
+    width: 240px;
+    height: 490px;
+    margin: 4px auto 22px;
+    border-radius: 30px;
+    background: var(--surface);
+    border: 7px solid var(--navy);
+    box-shadow: var(--shadow);
+    position: relative;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+  .phone-mock .fill {
+    position: absolute;
+    inset: 0;
+    padding: 16px 14px;
+    display: flex;
+    flex-direction: column;
+  }
+  .phone-mock .notch {
+    position: absolute;
+    top: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 56px; height: 16px;
+    background: var(--navy);
+    border-radius: 0 0 10px 10px;
+    z-index: 2;
+  }
+
+  .phone-video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    background: var(--surface);
+  }
+
+  /* Diagram 1: realistic chat mockup (screen-q) — modelled on a real
+     WhatsApp-style thread so the reselling flow reads instantly: a
+     header naming who "you" are chatting with, your own messages sent
+     on the right, their replies received on the left, ending in a
+     profit payoff so the whole resale loop is visible in one glance. */
+  .chat-fill { padding: 0 !important; }
+  .chat-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 15px 14px 12px;
+    border-bottom: 1px solid var(--line);
+    flex-shrink: 0;
+  }
+  .chat-back { font-size: 22px; color: var(--sub); line-height: 1; }
+  .chat-avatar {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: var(--purple-soft);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+  .chat-name { font-weight: 700; font-size: 14px; color: var(--navy); }
+  .chat-status { font-size: 11px; color: var(--green); }
+
+  .chat-stack {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: 12px;
+    padding: 16px 14px;
+  }
+  .bubble {
+    max-width: 80%;
+    padding: 11px 15px;
+    font-weight: 600;
+    font-size: 14px;
+    opacity: 0;
+    position: relative;
+    margin-top: 15px;
+    animation: bubbleCycle 6s ease-in-out infinite;
+  }
+  .bubble::before {
+    content: attr(data-sender);
+    position: absolute;
+    top: -15px;
+    font-size: 9.5px;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--sub);
+  }
+  .bubble.sent {
+    align-self: flex-end;
+    background: var(--purple);
+    color: #fff;
+    border-radius: 16px 16px 4px 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .bubble.sent::before { right: 2px; }
+  .bubble.received {
+    align-self: flex-start;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    color: var(--ink);
+    border-radius: 16px 16px 16px 4px;
+  }
+  .bubble.received::before { left: 2px; }
+  .prod-swatch {
+    width: 26px; height: 26px;
+    border-radius: 7px;
+    background: rgba(255, 255, 255, 0.25);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px;
+    flex-shrink: 0;
+  }
+  .profit-badge {
+    align-self: center;
+    margin-top: 4px;
+    background: var(--green-soft);
+    color: var(--green);
+    font-weight: 800;
+    font-size: 13.5px;
+    padding: 9px 16px;
+    border-radius: 999px;
+    opacity: 0;
+    animation: bubbleCycle 6s ease-in-out infinite;
+  }
+  .bubble.b1 { animation-delay: 0s; }
+  .bubble.b2 { animation-delay: 1.4s; }
+  .bubble.b3 { animation-delay: 2.8s; }
+  .profit-badge.b4 { animation-delay: 4.2s; }
+  @keyframes bubbleCycle {
+    0% { opacity: 0; transform: translateY(8px); }
+    9% { opacity: 1; transform: none; }
+    82% { opacity: 1; }
+    94% { opacity: 0; }
+    100% { opacity: 0; }
+  }
+
+  /* Diagram 2: scrolling catalog (screen-2) */
+  .catalog-viewport { height: 100%; overflow: hidden; }
+  .catalog-track {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    animation: catalogScroll 7s linear infinite;
+  }
+  .catalog-card {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--purple-soft);
+    border-radius: 12px;
+    padding: 10px 12px;
+    font-weight: 700;
+    font-size: 12.5px;
+    color: var(--navy);
+    flex-shrink: 0;
+  }
+  .catalog-card .emoji { font-size: 17px; }
+  @keyframes catalogScroll {
+    from { transform: translateY(0); }
+    to { transform: translateY(-50%); }
+  }
+
+  /* Diagram 3: share (screen-3) */
+  .share-scene { flex: 1; display: flex; align-items: center; justify-content: center; position: relative; }
+  .share-card {
+    position: absolute;
+    background: var(--purple-soft);
+    border-radius: 12px;
+    padding: 10px 14px;
+    font-weight: 700;
+    font-size: 12.5px;
+    color: var(--navy);
+    animation: shareFly 3s ease-in-out infinite;
+  }
+  .share-target {
+    position: absolute;
+    right: 18px;
+    bottom: 18px;
+    font-size: 26px;
+    animation: sharePulse 3s ease-in-out infinite;
+  }
+  @keyframes shareFly {
+    0% { transform: translate(-46px, -30px) scale(1); opacity: 0; }
+    18% { opacity: 1; }
+    55% { transform: translate(30px, 40px) scale(0.85); opacity: 1; }
+    70% { opacity: 0; }
+    100% { opacity: 0; }
+  }
+  @keyframes sharePulse {
+    0%, 45% { transform: scale(1); }
+    58% { transform: scale(1.3); }
+    70%, 100% { transform: scale(1); }
+  }
+  .order-check {
+    position: absolute;
+    left: 20px;
+    bottom: 20px;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--green);
+    background: var(--green-soft);
+    padding: 5px 10px;
+    border-radius: 999px;
+    opacity: 0;
+    animation: orderCheckIn 3s ease-in-out infinite;
+  }
+  @keyframes orderCheckIn {
+    0%, 62% { opacity: 0; transform: translateY(6px); }
+    75%, 92% { opacity: 1; transform: none; }
+    100% { opacity: 0; }
+  }
+
+  /* Diagram 4: order + returns (screen-4) */
+  .order-scene { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; }
+  .box-icon { font-size: 56px; animation: boxBounce 3.2s ease-in-out infinite; }
+  @keyframes boxBounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+  .badge-row { display: flex; gap: 8px; }
+  .badge {
+    font-size: 12px;
+    font-weight: 700;
+    padding: 6px 11px;
+    border-radius: 999px;
+    opacity: 0;
+    animation: badgeCycle 3.2s ease-in-out infinite;
+  }
+  .badge.ok { background: var(--green-soft); color: var(--green); animation-delay: 0.2s; }
+  .badge.ret { background: var(--purple-soft); color: var(--purple); animation-delay: 1.6s; }
+  @keyframes badgeCycle {
+    0%, 8% { opacity: 0; transform: translateY(6px); }
+    20%, 75% { opacity: 1; transform: none; }
+    88%, 100% { opacity: 0; }
+  }
+
+  /* Diagram 5: earnings (screen-5) */
+  .earn-scene { flex: 1; display: flex; align-items: flex-end; justify-content: center; gap: 10px; padding-bottom: 8px; }
+  .earn-bar {
+    width: 26px;
+    border-radius: 8px 8px 0 0;
+    background: linear-gradient(180deg, var(--gold) 0%, var(--gold-deep) 100%);
+    animation: barGrow 2.6s ease-in-out infinite;
+  }
+  .earn-bar.b1 { animation-delay: 0s; }
+  .earn-bar.b2 { animation-delay: 0.2s; }
+  .earn-bar.b3 { animation-delay: 0.4s; }
+  .earn-bar.b4 { animation-delay: 0.6s; }
+  @keyframes barGrow {
+    0%, 100% { height: 30%; }
+    50% { height: 85%; }
+  }
+  .rupee-float {
+    position: absolute;
+    top: 30px;
+    right: 26px;
+    font-size: 22px;
+    animation: rupeeFloat 2.6s ease-in-out infinite;
+  }
+  @keyframes rupeeFloat {
+    0%, 100% { transform: translateY(0); opacity: 0.7; }
+    50% { transform: translateY(-10px); opacity: 1; }
+  }
+
+  /* ---------- Buttons ---------- */
+  .btn-stack { margin-top: auto; display: flex; flex-direction: column; gap: 12px; padding-top: 10px; }
+
+  .btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 17px 20px;
+    border-radius: 16px;
+    border: none;
+    font-size: 16px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: transform 0.15s ease;
+  }
+  .btn:active { transform: scale(0.98); }
+
+  .btn-primary {
+    background: linear-gradient(180deg, var(--purple) 0%, var(--purple-deep) 100%);
+    color: #fff;
+    box-shadow: 0 10px 22px rgba(117, 48, 176, 0.35);
+  }
+  .btn-ghost {
+    background: var(--surface);
+    color: var(--ink);
+    border: 1.6px solid var(--line);
+  }
+
+  .back-link {
+    text-align: center;
+    margin-top: 16px;
+    font-size: 13px;
+    color: var(--sub);
+    text-decoration: underline;
+    cursor: pointer;
+    background: none;
+    border: none;
+    font-family: inherit;
+  }
+
+  /* ---------- No-branch dead end ---------- */
+  .no-scene {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 16px;
+    padding-top: 30px;
+  }
+  .no-emoji { font-size: 48px; }
+  .no-title { font-size: 20px; font-weight: 700; color: var(--navy); max-width: 300px; }
+  .no-sub { font-size: 14px; color: var(--sub); max-width: 280px; line-height: 1.5; }
+
+  /* ---------- Value bullets (screen 5) ---------- */
+  .bullet-card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 12px 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 10px;
+  }
+  .bullet-card .emoji { font-size: 18px; }
+
+  /* ---------- Form screen ---------- */
+  .form-title { font-size: 21px; font-weight: 700; color: var(--navy); text-align: center; margin-bottom: 4px; }
+  .form-sub { font-size: 13.5px; color: var(--sub); text-align: center; margin-bottom: 22px; }
+
+  .field-label { font-size: 13px; font-weight: 700; color: var(--ink); margin: 16px 0 8px; }
+  .field-label:first-of-type { margin-top: 0; }
+
+  .text-input {
+    width: 100%;
+    padding: 14px 16px;
+    border-radius: 13px;
+    border: 1.6px solid var(--line);
+    background: var(--surface);
+    color: var(--ink);
+    font-size: 15px;
+    font-family: inherit;
+  }
+  .text-input:focus { outline: none; border-color: var(--purple); }
+  .text-input::placeholder { color: #A9A9BC; }
+
+  .pill-group { display: flex; flex-wrap: wrap; gap: 8px; }
+  .pill-input { position: absolute; opacity: 0; width: 0; height: 0; }
+  .pill-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 14px;
+    border-radius: 999px;
+    border: 1.6px solid var(--line);
+    background: var(--surface);
+    color: var(--ink);
+    font-size: 13.5px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  .pill-input:checked + .pill-label {
+    background: var(--navy);
+    border-color: var(--navy);
+    color: #fff;
+  }
+
+  .form-error {
+    display: none;
+    background: #FBEAEA;
+    color: var(--red);
+    font-size: 13px;
+    font-weight: 600;
+    padding: 10px 14px;
+    border-radius: 12px;
+    margin-top: 16px;
+    text-align: center;
+  }
+
+  .submit-wrap { margin-top: 24px; }
+
+  /* ---------- Redirect / done screen ---------- */
+  .done-scene {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+    text-align: center;
+  }
+  .spinner {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    border: 4px solid var(--purple-soft);
+    border-top-color: var(--purple);
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .done-text { font-size: 15px; font-weight: 700; color: var(--navy); }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; }
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+  <div class="brand-bar"><img src="/assets/qrate-logo.png" alt="QRate by ShopDeck"></div>
+  <div class="progress-dots" id="progress-dots">
+    <span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span>
+  </div>
+
+  <main class="stage">
+
+    <!-- Screen 1: qualifying question -->
+    <section class="screen active" id="screen-q">
+      <span class="kicker deva">QRate by ShopDeck</span>
+      <h1 class="headline deva">Kya aap ek <span class="hl">reseller</span> ho jo apne customers ko WhatsApp pe products sell karte ho?</h1>
+
+      <div class="phone-mock">
+        <div class="notch"></div>
+        <div class="fill chat-fill">
+          <div class="chat-header">
+            <span class="chat-back">‹</span>
+            <span class="chat-avatar">🙋🏻‍♀️</span>
+            <div class="chat-header-text">
+              <div class="chat-name deva">Customer</div>
+              <div class="chat-status">online</div>
+            </div>
+          </div>
+          <div class="chat-stack">
+            <div class="bubble sent b1" data-sender="Aap"><span class="prod-swatch">🥻</span><span>Kanjivaram Saree — ₹899</span></div>
+            <div class="bubble received b2" data-sender="Customer">😍 Ye toh bohot sundar hai! Bhej do</div>
+            <div class="bubble sent b3" data-sender="Aap">✅ Order confirmed! 3 din mein aayega</div>
+            <div class="profit-badge b4 deva">💰 +₹150 aapka profit</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="btn-stack">
+        <button class="btn btn-primary deva" id="btn-yes">Haan, main reseller hoon 🙋</button>
+        <button class="btn btn-ghost deva" id="btn-no">Nahi - main reseller nahi hoon</button>
+      </div>
+    </section>
+
+    <!-- No-branch dead end -->
+    <section class="screen" id="screen-no">
+      <div class="no-scene">
+        <div class="no-emoji">🙏</div>
+        <div class="no-title deva">QRate abhi sirf WhatsApp aur Instagram resellers ke liye hai</div>
+        <div class="no-sub deva">Jab aap customers ko resell karna shuru karein, tab humare paas zaroor wapas aayein — hum yahin hain!</div>
+        <button class="back-link deva" id="btn-no-back">‹ Galti se dab gaya? Wapas jaayein</button>
+      </div>
+    </section>
+
+    <!-- Screen 2 -->
+    <section class="screen" id="screen-2">
+      <span class="kicker deva">Step 1 · Explore</span>
+      <h1 class="headline deva">QRate deta hai access to <span class="hl">1 Lakh+ Products</span></h1>
+      <div class="subline deva">Jewellery, Saree, Kurti, Home & Kitchen aur other women's categories</div>
+
+      <div class="phone-mock video-mock">
+        <div class="notch"></div>
+        <video class="phone-video" autoplay muted loop playsinline webkit-playsinline="true">
+          <source src="/assets/videos/screen2.mp4" type="video/mp4">
+          <source src="/assets/videos/screen2.webm" type="video/webm">
+        </video>
+      </div>
+
+      <div class="btn-stack">
+        <button class="btn btn-primary deva" id="next-2">Next →</button>
+      </div>
+    </section>
+
+    <!-- Screen 3 -->
+    <section class="screen" id="screen-3">
+      <span class="kicker deva">Step 2 · Share</span>
+      <h1 class="headline deva">Apna price set karein → Customers ke saath <span class="hl">ek click mein WhatsApp pe share</span> karein → Orders lein</h1>
+
+      <div class="phone-mock video-mock">
+        <div class="notch"></div>
+        <video class="phone-video" autoplay muted loop playsinline webkit-playsinline="true">
+          <source src="/assets/videos/screen3.mp4" type="video/mp4">
+          <source src="/assets/videos/screen3.webm" type="video/webm">
+        </video>
+      </div>
+
+      <div class="btn-stack">
+        <button class="btn btn-primary deva" id="next-3">Next →</button>
+      </div>
+    </section>
+
+    <!-- Screen 4 -->
+    <section class="screen" id="screen-4">
+      <span class="kicker deva">Step 3 · Fulfil</span>
+      <h1 class="headline deva">Easy Order Placement aur har order par <span class="hl">no questions asked Returns</span> available</h1>
+
+      <div class="phone-mock video-mock">
+        <div class="notch"></div>
+        <video class="phone-video" autoplay muted loop playsinline webkit-playsinline="true">
+          <source src="/assets/videos/screen4.mp4" type="video/mp4">
+          <source src="/assets/videos/screen4.webm" type="video/webm">
+        </video>
+      </div>
+
+      <div class="btn-stack">
+        <button class="btn btn-primary deva" id="next-4">Next →</button>
+      </div>
+    </section>
+
+    <!-- Screen 5 -->
+    <section class="screen" id="screen-5">
+      <span class="kicker deva">Step 4 · Earn</span>
+      <h1 class="headline deva">Resellers ke liye <span class="hl">earnings hi earnings</span> 💰</h1>
+      <div class="subline deva">1L+ Top Selling Products · Quality hamari guarantee · Shipping & Return fees — sab free</div>
+
+      <div class="phone-mock video-mock">
+        <div class="notch"></div>
+        <picture>
+          <source srcset="/assets/images/screen5.webp" type="image/webp">
+          <img class="phone-video" src="/assets/images/screen5.jpg" alt="QRate earnings dashboard showing orders and commission earned">
+        </picture>
+      </div>
+
+      <div class="btn-stack">
+        <button class="btn btn-primary deva" id="btn-start">Start Earning 🚀</button>
+      </div>
+    </section>
+
+    <!-- Screen: lead form (form mode only) -->
+    <section class="screen" id="screen-form">
+      <div class="form-title deva">Bas 4 cheezein bhar dein</div>
+      <div class="form-sub deva">Apni category ke products dekhne ke liye</div>
+
+      <form id="onboard-form" novalidate>
+        <div class="field-label deva">Naam</div>
+        <input class="text-input deva" type="text" id="f-name" placeholder="Aapka naam" autocomplete="name">
+
+        <div class="field-label deva">Mobile Number</div>
+        <input class="text-input" type="tel" id="f-phone" placeholder="10-digit mobile number" inputmode="numeric" autocomplete="tel">
+
+        <div class="field-label deva">Aap roughly kitne orders/month lena chahenge?</div>
+        <div class="pill-group">
+          <input class="pill-input" type="radio" name="orders" id="ord-new" value="New to reselling"><label class="pill-label deva" for="ord-new">New to reselling</label>
+          <input class="pill-input" type="radio" name="orders" id="ord-1" value="<3"><label class="pill-label" for="ord-1">&lt;3</label>
+          <input class="pill-input" type="radio" name="orders" id="ord-2" value="3-5"><label class="pill-label" for="ord-2">3-5</label>
+          <input class="pill-input" type="radio" name="orders" id="ord-3" value="5-10"><label class="pill-label" for="ord-3">5-10</label>
+          <input class="pill-input" type="radio" name="orders" id="ord-4" value="10+"><label class="pill-label" for="ord-4">10+</label>
+        </div>
+
+        <div class="field-label deva">Kaunsi categories mein products dekhna/bechna chahenge? (Select all)</div>
+        <div class="pill-group">
+          <input class="pill-input" type="checkbox" name="category" id="cat-kurtis" value="Kurtis/Ethnic Wear"><label class="pill-label deva" for="cat-kurtis">👗 Kurtis/Ethnic Wear</label>
+          <input class="pill-input" type="checkbox" name="category" id="cat-sarees" value="Sarees"><label class="pill-label deva" for="cat-sarees">🥻 Sarees</label>
+          <input class="pill-input" type="checkbox" name="category" id="cat-jewellery" value="Jewellery"><label class="pill-label deva" for="cat-jewellery">💍 Jewellery</label>
+          <input class="pill-input" type="checkbox" name="category" id="cat-bags" value="Women's Bags/Accessories"><label class="pill-label deva" for="cat-bags">👜 Women's Bags/Accessories</label>
+          <input class="pill-input" type="checkbox" name="category" id="cat-home" value="Home & Kitchen"><label class="pill-label deva" for="cat-home">🏠 Home & Kitchen</label>
+          <input class="pill-input" type="checkbox" name="category" id="cat-men" value="Men's Fashion"><label class="pill-label deva" for="cat-men">👔 Men's Fashion</label>
+          <input class="pill-input" type="checkbox" name="category" id="cat-kids" value="Kid's Fashion"><label class="pill-label deva" for="cat-kids">🧸 Kid's Fashion</label>
+          <input class="pill-input" type="checkbox" name="category" id="cat-other" value="Other"><label class="pill-label deva" for="cat-other">✨ Other</label>
+        </div>
+
+        <div class="form-error deva" id="form-error"></div>
+
+        <div class="submit-wrap">
+          <button type="submit" class="btn btn-primary deva">Start Earning 🚀</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- Redirect / done -->
+    <section class="screen" id="screen-done">
+      <div class="done-scene">
+        <div class="spinner"></div>
+        <div class="done-text deva">Aapka QRate page taiyar ho raha hai…</div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script>
+(function () {
+  var FLOW_MODE = '__FLOW_MODE__';
+  var COMMUNITY_SLUG = '__COMMUNITY_SLUG__';
+  var QRATE_BASE_URL = '__QRATE_BASE_URL__';
+  var CATEGORY_SUBCATEGORIES = __CATEGORY_SUBCATEGORIES_JSON__;
+  var QUALIFYING_CATEGORIES = ['Kurtis/Ethnic Wear', 'Sarees', 'Jewellery', "Women's Bags/Accessories"];
+  var STEPS = ['screen-q', 'screen-2', 'screen-3', 'screen-4', 'screen-5'];
+
+  var dotsEl = document.getElementById('progress-dots');
+
+  function showScreen(id) {
+    var all = document.querySelectorAll('.screen');
+    for (var i = 0; i < all.length; i++) { all[i].classList.remove('active'); }
+    document.getElementById(id).classList.add('active');
+
+    var idx = STEPS.indexOf(id);
+    if (idx === -1) {
+      dotsEl.style.visibility = 'hidden';
+    } else {
+      dotsEl.style.visibility = 'visible';
+      var dots = dotsEl.children;
+      for (var d = 0; d < dots.length; d++) {
+        dots[d].classList.toggle('done', d < idx);
+        dots[d].classList.toggle('active', d === idx);
+      }
+    }
+    window.scrollTo(0, 0);
+  }
+
+  function buildDestinationUrl(selectedCategories) {
+    var subcats = [];
+    selectedCategories.forEach(function (cat) {
+      var list = CATEGORY_SUBCATEGORIES[cat];
+      if (list) {
+        list.forEach(function (s) { if (subcats.indexOf(s) === -1) subcats.push(s); });
+      }
+    });
+    if (subcats.length > 0) {
+      return QRATE_BASE_URL + '?sub_category=' + encodeURIComponent(subcats.join(',')) + '&utm_source=LP';
+    }
+    return QRATE_BASE_URL + '?utm_source=LP';
+  }
+
+  function fireOnboardingPixel(qualifies, categories) {
+    if (!window.fbq) return;
+    fbq('track', 'Lead', { content_name: 'QRate Onboarding', content_category: COMMUNITY_SLUG });
+    var grParams = { content_category: COMMUNITY_SLUG };
+    if (categories) grParams.categories = categories;
+    if (qualifies) fbq('trackCustom', 'Good Reseller', grParams);
+    fbq('trackCustom', 'QRate Onboarding Start Earning', { content_category: COMMUNITY_SLUG, flow_mode: FLOW_MODE });
+  }
+
+  // Screen 1
+  document.getElementById('btn-yes').addEventListener('click', function () { showScreen('screen-2'); });
+  document.getElementById('btn-no').addEventListener('click', function () { showScreen('screen-no'); });
+  document.getElementById('btn-no-back').addEventListener('click', function () { showScreen('screen-q'); });
+
+  // Screens 2-4
+  document.getElementById('next-2').addEventListener('click', function () { showScreen('screen-3'); });
+  document.getElementById('next-3').addEventListener('click', function () { showScreen('screen-4'); });
+  document.getElementById('next-4').addEventListener('click', function () { showScreen('screen-5'); });
+
+  // Screen 5 — Start Earning
+  document.getElementById('btn-start').addEventListener('click', function () {
+    if (FLOW_MODE === 'form') {
+      showScreen('screen-form');
+    } else {
+      showScreen('screen-done');
+      fireOnboardingPixel(true, '');
+      setTimeout(function () {
+        window.location.href = QRATE_BASE_URL + '?utm_source=LP';
+      }, 600);
+    }
+  });
+
+  // Form submit (form mode only)
+  var form = document.getElementById('onboard-form');
+  if (form) {
+    var errEl = document.getElementById('form-error');
+    function showFormError(msg) { errEl.textContent = msg; errEl.style.display = 'block'; }
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      var name = document.getElementById('f-name').value.trim();
+      var phone = document.getElementById('f-phone').value.trim();
+      var ordersEl = form.querySelector('input[name="orders"]:checked');
+      var categoryEls = form.querySelectorAll('input[name="category"]:checked');
+      var categories = Array.prototype.map.call(categoryEls, function (el) { return el.value; });
+      var phoneDigits = phone.replace(/\D/g, '');
+
+      if (!name) return showFormError('Apna naam likhein');
+      if (phoneDigits.length < 10) return showFormError('Sahi mobile number daalein');
+      if (!ordersEl) return showFormError('Ek option chunein — kitne orders');
+      if (categories.length === 0) return showFormError('Kam se kam ek category chunein');
+
+      errEl.style.display = 'none';
+
+      var orders = ordersEl.value;
+      var qualifies = orders !== 'New to reselling' &&
+                      categories.some(function (c) { return QUALIFYING_CATEGORIES.indexOf(c) !== -1; });
+      var leadCategories = categories.join(', ');
+      var destination = buildDestinationUrl(categories);
+
+      var payload = {
+        community: COMMUNITY_SLUG,
+        name: name,
+        phone: phone,
+        kahan_bechte_ho: 'WhatsApp/Insta reseller',
+        daily_orders: orders,
+        categories: leadCategories,
+        qualifies: qualifies
+      };
+
+      try {
+        fetch('/api/leads', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        }).catch(function () { /* ignore */ });
+      } catch (leadErr) { /* ignore */ }
+
+      showScreen('screen-done');
+      fireOnboardingPixel(qualifies, leadCategories);
+
+      setTimeout(function () {
+        window.location.href = destination;
+      }, 600);
+    });
+  }
+})();
+</script>
+
+</body>
+</html>
