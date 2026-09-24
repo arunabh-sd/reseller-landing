@@ -51,7 +51,7 @@ const EXPLORE_ONBOARDING_PAGES = {
   Explore3: { mode: 'direct' }, // alias of Explore2
   Explore4: { mode: 'form' },   // alias of Explore1
   Comm1: { mode: 'form', waLink: COMMUNITIES.Comm1 },
-  Comm2: { mode: 'direct', waLink: COMMUNITIES.Comm1 }, // Comm2 group paused -> also Comm1's group for now
+  Comm2: { mode: 'direct', waLink: COMMUNITIES.Comm1 }, // both onboarding routes go to Community 1 for now — Join2 below is the only route using Community 2's real link
 };
  
 // Each key becomes a route: /Join1, ... A minimal page (no onboarding
@@ -60,7 +60,7 @@ const EXPLORE_ONBOARDING_PAGES = {
 // HSM template — that won't let you send a chat.whatsapp.com link directly.
 const WA_REDIRECT_PAGES = {
   Join1: { waLink: COMMUNITIES.Comm1 },
-  Join2: { waLink: COMMUNITIES.Comm1 }, // Comm2 group paused -> also Comm1's group for now (see COMMUNITIES above); flip to COMMUNITIES.Comm2 once that group is running again
+  Join2: { waLink: COMMUNITIES.Comm2 },
 };
  
 // The site the "Submit & Explore" button sends people to.
