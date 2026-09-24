@@ -490,6 +490,10 @@
     border: 1.6px solid var(--line);
   }
 
+  /* WhatsApp icon used on every "Join WhatsApp Community" CTA — sized to
+     sit inline with the button label, spaced by the button's own flex gap. */
+  .wa-icon { flex-shrink: 0; display: block; }
+
   .back-link {
     text-align: center;
     margin-top: 16px;
@@ -617,6 +621,15 @@
 </style>
 </head>
 <body>
+
+<!-- Reusable WhatsApp icon, referenced via <use> wherever a "Join WhatsApp
+     Community" CTA needs it, so the artwork is defined once. -->
+<svg width="0" height="0" style="position: absolute;" aria-hidden="true">
+  <symbol id="wa-icon-symbol" viewBox="0 0 24 24">
+    <circle cx="12" cy="12" r="12" fill="#25D366"></circle>
+    <path fill="#FFFFFF" d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.288.173-1.413-.074-.124-.272-.198-.57-.347z"></path>
+  </symbol>
+</svg>
 
 <div class="app">
   <div class="brand-bar"><img src="/assets/qrate-logo.png" alt="QRate by ShopDeck"></div>
@@ -795,7 +808,7 @@
         <div class="done-emoji">🎉</div>
         <div class="done-text deva">Shukriya! WhatsApp khul raha hai…</div>
         <div class="subline deva" style="margin: -10px 0 0;">Nahi khula? Neeche tap karein</div>
-        <button class="btn btn-primary deva" id="join-wa-btn">Join WA Community 💬</button>
+        <button class="btn btn-primary deva" id="join-wa-btn"><svg class="wa-icon" width="20" height="20" aria-hidden="true"><use href="#wa-icon-symbol"></use></svg>Join WhatsApp Community</button>
       </div>
     </section>
 
@@ -812,6 +825,9 @@
   var CATEGORY_SUBCATEGORIES = __CATEGORY_SUBCATEGORIES_JSON__;
   var QUALIFYING_CATEGORIES = ['Kurtis/Ethnic Wear', 'Sarees', 'Jewellery', "Women's Bags/Accessories"];
   var STEPS = ['screen-q', 'screen-2', 'screen-3', 'screen-4', 'screen-5'];
+  // Reused for every button relabeled to "Join WhatsApp Community" below —
+  // points at the <symbol> defined once near the top of <body>.
+  var WA_ICON_HTML = '<svg class="wa-icon" width="20" height="20" aria-hidden="true"><use href="#wa-icon-symbol"></use></svg>';
 
   var dotsEl = document.getElementById('progress-dots');
 
@@ -892,7 +908,7 @@
   // on screen 5, since the form still comes next either way — it's the
   // form's own submit button, below, that gets relabeled for that case).
   if (DEST_TYPE === 'whatsapp' && FLOW_MODE === 'direct') {
-    document.getElementById('btn-start').textContent = 'Join WA Community 💬';
+    document.getElementById('btn-start').innerHTML = WA_ICON_HTML + 'Join WhatsApp Community';
   }
 
   // Form's own submit button — WhatsApp destination (Comm1): relabel up
@@ -900,10 +916,10 @@
   // since submitting here leads to the WA-join screen, not qrate.shopdeck.com.
   if (DEST_TYPE === 'whatsapp') {
     var formSubmitBtn = document.getElementById('form-submit-btn');
-    if (formSubmitBtn) formSubmitBtn.textContent = 'Join WhatsApp Community 💬';
+    if (formSubmitBtn) formSubmitBtn.innerHTML = WA_ICON_HTML + 'Join WhatsApp Community';
   }
 
-  // Screen 5 — Start Earning / Join WA Community
+  // Screen 5 — Start Earning / Join WhatsApp Community
   document.getElementById('btn-start').addEventListener('click', function () {
     if (FLOW_MODE === 'form') {
       showScreen('screen-form');
